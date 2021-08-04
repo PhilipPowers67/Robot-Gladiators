@@ -68,27 +68,42 @@ var enemyinfo = [
     attack: randomNumber(10, 14)
   }
 ];
+var fightOrSkip = function() {
+  //ask player if they'd like to fight or skip using the fightOrSkip function
+  var promptFight = window.prompt('Would you like to FIGHT or SKIP this battle? Enter "FIGHT" or "SKIP" to choose.');
 
+  // Conditional Recursive Function Call
+if (promptFight === "" || promptFight === null) {
+  window.alert("You need to provide a valid answer! Please try again.");
+  return fightOrSkip();
+}
+
+  // if player picks "skip" confirm and then stop the loop
+  if (promptFight === "skip") {
+    // confirm player wants to skip
+    var confirmSkip = window.confirm("Are you sure you'd like to quit?");
+
+    // if yes (true), leave fight
+    if (confirmSkip) {
+      window.alert(playerinfo.name + " has decided to skip this fight!");
+      //subtract money from playerMoney for skipping
+      playerinfo.money = Math.max(0, playerinfo.money - 10);
+
+      return true;
+      shop();
+    }
+  }
+}
 var fight = function(enemy) {
   //repeat and execute as long as the enemy-robot is alive
   while (playerinfo.health > 0 && enemy.health > 0) {
     
- 
-  var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose");
-  // if player choses to skip confirm and then stop the loop  
-  if (promptFight === "skip" || promptFight === "SKIP") {
-    // confirm player wants to skip
-    var confirmSkip = window.confirm("Are you sure you'd like to quit?");
+  if (fightOrSkip()) {
+    break;
+  }
+  var damage = randomNumber(playerinfo.attack - 3, playerinfo.attack);
   
-    // if yes (true), leave fight
-    if (confirmSkip) {
-      window.alert(playerinfo.name + " has decided to skip this fight. Goodbye!");
-      // subtract money from playerMoney for skipping
-      playerinfo.money = Math.max(0, playerinfo.money - 10);
-      console.log("playermoney", playerinfo.money);
-      break;
-    }
-  } 
+  
     if(promptFight === "fight" || promptFight === "FIGHT") {
     // remove enemy's health by subtracting the amount set in the playerAttack variable
     var damage = randomNumber(playerinfo.attack - 3, playerinfo.attack);
@@ -125,9 +140,10 @@ var fight = function(enemy) {
     // if no (false), ask question again by running fight() again
     else {
       fight();
+      
+      }
     }
-  } 
-};
+  }; 
 
 var startGame = function() {
   // reset player stats
