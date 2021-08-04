@@ -95,54 +95,75 @@ if (promptFight === "" || promptFight === null) {
   }
 }
 var fight = function(enemy) {
-  //repeat and execute as long as the enemy-robot is alive
+  // keep track of who goes first
+  var isPlayerTurn = True;
+
+  // randomly change turn order
+  if (Math.random() > 0.5) {
+    isPlayerTurn = false;
+  }
+
   while (playerinfo.health > 0 && enemy.health > 0) {
-  if (fightOrSkip()) {
+  if (isPlayerTurn) {
+    // ask player if they'd like to fight or skip using fightOrSkip function
+    if (fightOrSkip()) {
     break;
   }
-  var damage = randomNumber(playerinfo.attack - 3, playerinfo.attack);
-  
-  
-    if (promptFight === "fight" || promptFight === "FIGHT") {
-    // remove enemy's health by subtracting the amount set in the playerAttack variable
     var damage = randomNumber(playerinfo.attack - 3, playerinfo.attack);
-      enemy.health = Math.max(0, enemy.health - damage);
+
+    enemy.health = Math.max(0, enemy.health - damage);
     console.log(
-        playerinfo.name + " attacked " + enemy.name + ". " + enemy.name + " now has " + enemy.health + " health remaining."
+        playerinfo.name +
+         " attacked " +
+          enemy.name +
+           ". " +
+            enemy.name +
+             " now has " +
+              enemy.health +
+               " health remaining."
     );
-        
+
     // check enemy's health
     if (enemy.health <= 0) {
         window.alert(enemy.name + " has died!");
+
+        // award player money for winning
+        playerinfo.money = playerinfo.money + 20;
         break;
     } else {
         window.alert(enemy.name + " still has " + enemy.health + " health left.");
     }
-    
-
-  // remove player's health by subtracting the amount set in the enemyAttack variable
+    // player gets attacked first
+  } else {
     var damage = randomNumber(enemy.attack - 3, enemy.attack);
+  
+    // remove player's health by subtracting the amount set in the damage variable
       playerinfo.health = Math.max(0, playerinfo.health - damage);
     console.log(
-        enemy.name + " attacked " + playerinfo.name + ". " + playerinfo.name + " now has " + playerinfo.health + " health remaining."
+        enemy.name +
+         " attacked " +
+          playerinfo.name +
+           ". " +
+            playerinfo.name +
+             " now has " +
+              playerinfo.health +
+               " health remaining."
     );
 
     if (playerinfo.health <= 0) {
-        window.alert(playerinfo.name + " has died!");
-        break;
+      window.alert(playerinfo.name + " has died!");
+      //leave while() loop if player dies
+      break;
     } else {
-        window.alert(playerinfo.name + " still has " + playerinfo.health + " health left.");
+      window.alert(playerinfo.name + " still has " + playerinfo.health + " health left.");
     }
+  }
+  // switch order for next round
+    isPlayerTurn = !isPlayerTurn;
+}
+};
     
-    
-} 
-    // if no (false), ask question again by running fight() again
-    else {
-      fight();
-      
-      }
-    }
-  }; 
+   
 
 var startGame = function() {
   // reset player stats
@@ -180,17 +201,28 @@ endGame();
 };
 
 var endGame = function(){
-  // if player is stikll alive, player wins!
-  if (playerinfo.health > 0) {
-    window.alert("Great job, you've survived the game! You now have a score of " + playerinfo.money + ".");
+  window.alert("The game has now ended. Let's see how you did!");
+
+  // check localStorage for high score, if its not there use 0
+  var highScore = localStorage.getItem("highscore");
+  if (highscore === null) {
+    highScore = 0;
+  }
+  // if player has more money than the high score, player has new high score
+  if (playerinfo.money > highScore) {
+    localStorage.setItem("highscore", playerinfo.money);
+    localStorage.setItem("name", playerinfo.name);
+
+    alert(playerinfo.name + " now has the high score of " + playerinfo.money + "!");
   }
   else {
-    window.alert("You've lost your robot in battle.");
+    alert(playerinfo.name + " did not beat the high score of " + highScore + "!");
   }
+
+  // ask player if they'd like to play again
   var playAgainConfirm = window.confirm("Would you like to play again?");
 
-  if (playAgainConfirm) {
-    // restart the game
+  if(playAgainConfirm) {
     startGame();
   }
   else {
