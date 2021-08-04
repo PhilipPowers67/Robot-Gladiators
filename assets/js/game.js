@@ -97,21 +97,20 @@ if (promptFight === "" || promptFight === null) {
 var fight = function(enemy) {
   //repeat and execute as long as the enemy-robot is alive
   while (playerinfo.health > 0 && enemy.health > 0) {
-    
   if (fightOrSkip()) {
     break;
   }
   var damage = randomNumber(playerinfo.attack - 3, playerinfo.attack);
   
   
-    if(promptFight === "fight" || promptFight === "FIGHT") {
+    if (promptFight === "fight" || promptFight === "FIGHT") {
     // remove enemy's health by subtracting the amount set in the playerAttack variable
     var damage = randomNumber(playerinfo.attack - 3, playerinfo.attack);
       enemy.health = Math.max(0, enemy.health - damage);
     console.log(
         playerinfo.name + " attacked " + enemy.name + ". " + enemy.name + " now has " + enemy.health + " health remaining."
     );
-
+        
     // check enemy's health
     if (enemy.health <= 0) {
         window.alert(enemy.name + " has died!");
@@ -202,27 +201,23 @@ var endGame = function(){
 var shop = function() {
   //ask player what they'd like to do...
   var shopOptionPrompt = window.prompt(
-    "Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice."
+    "Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one 1 for REFILL, 2 for UPGRADE, or 3 for LEAVE."
   );
+  shopOptionPrompt = parseInt(shopOptionPrompt);
   switch (shopOptionPrompt) {
-    case "REFILL": // NEW CASE
-    case "refill":
+    case 1:
      playerinfo.refillHealth();
       // increase health and decrease money
       break;
-    case "UPGRADE":
-    case "upgrade":
+    case 2:
      playerinfo.upgradeAttack();
       break;
-    case "LEAVE":
-    case "leave":
+    case 3:
       window.alert("leaving the store");
       //do nothing, function will end
       break;
       default:
         window.alert("You did not pick a valid option. Try again.");
-        
-        //call shop() again to force player to pick a valid option
         shop();
         break;
   }
